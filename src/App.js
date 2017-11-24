@@ -8,22 +8,24 @@ import SearchBooks from './SearchBooks'
 
 class BooksApp extends Component {
   state = {
-    books:[]
+    books: []
   }
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
       this.setState({ books })
-    })     
+    })
   }
   render() {
     return (
-      <div className="app">      
+      <div className="app">
         <Route exact path='/'
           render={() => (<MyReads />)
           } />
-        <Route path='/search'
-          render={() => (<SearchBooks />)
-          } />
+        <Route path='/search' render={() => (
+          <SearchBooks
+            books={this.state.books}
+          />)
+        } />
       </div>
     )
   }
