@@ -40,7 +40,7 @@ class SearchBooks extends Component {
                 </div>
                 <div className="search-books-results">
                     <ol className="books-grid">
-                        {showingBooks.map((book) => (
+                        {showingBooks && showingBooks.map((book) => (
                             <li key={book.id}>
                                 <Book book={book} />
                             </li>

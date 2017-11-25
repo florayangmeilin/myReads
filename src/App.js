@@ -18,12 +18,13 @@ class BooksApp extends Component {
   render() {
     return (
       <div className="app">
-        <Route exact path='/'
-          render={() => (<MyReads />)
-          } />
+        <Route exact path='/' render={() => (
+          <MyReads
+            books={this.state.books}
+          />)
+        } />
         <Route path='/search' render={() => (
           <SearchBooks
-            books={this.state.books}
           />)
         } />
       </div>
