@@ -9,7 +9,7 @@ class MyReads extends Component {
             { title: 'Want to Read', name: 'wantToRead' },
             { title: 'Read', name: 'read' }
         ].map((o, i) => ({ ...o, id: i }))
-        const { books } = this.props
+        const { books, onChangeShelf } = this.props
 
         return (
             <div className="list-books">
@@ -25,7 +25,9 @@ class MyReads extends Component {
                                     <ol className="books-grid">
                                         {books.filter(o => (o.shelf === shelf.name)).map(c => (
                                             <li key={c.id}>
-                                                <Book book={c} />
+                                                <Book
+                                                    book={c}
+                                                    onChangeShelf={onChangeShelf} />
                                             </li>
                                         ))}
                                     </ol>
