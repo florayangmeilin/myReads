@@ -8,28 +8,50 @@ class SearchBooks extends Component {
         query: '',
         showingBooks: []
     }
-
+    searchCount = 0
+    timeoutID = -1
     updateQuery = (query) => {
-        this.setState({ query: query.trim() })
-        BooksAPI.search(query, 20).then((books) => {
-            this.setState({ showingBooks: books.error === 'empty query' ? [] : books })
-        })
-        const { myReads } = this.props      
-        this.setState({
-            showingBooks: this.state.showingBooks.map(o => {             
-                if (myReads.find(c => c.id === o.id)) {
-                    return { ...o, shelf: myReads.find(c => c.id === o.id).shelf }
-                } else {
-                    return { ...o }
-                }
-            })
-        })
-    }
+        query = query.trim()
+        this.setState({ query })
+        if (this.timeoutID !== -1) {
+            // Cancel search request if there is input within 2 seconds
+            clearTimeout(this.timeoutID)
+        }
+        if (query === '') {
+            // If query is empty, there will be an error from BooksAPI.search
+            this.setState({ showingBooks: [] })
+        } else {
+            // start to search after 2 seconds
+            this.timeoutID = setTimeout(() => {
+                this.timeoutID = -1
+                this.searchCount++
+                console.log('add searchCount = ', this.searchCount)
+                BooksAPI.search(query, 20).then(queryResult => {
+                    if (this.searchCount > 0) this.searchCount--
+                    console.log('ok searchCount = ', this.searchCount)
+                    if (this.searchCount === 0) {
+                        let books = (queryResult && !queryResult.error && queryResult) || []
+                        const { myReads } = this.props
+                        books = books.map(o => {
+                            const f = myReads.find(o1 => o1.id === o.id)
+                            o.shelf = f ? f.shelf : 'none'
+                            return o
+                        })
+                        this.setState({ showingBooks: books })
+                    }
+                }).catch(() => {
+                    if (this.searchCount > 0) this.searchCount--
+                    console.log('failed searchCount = ', this.searchCount)
+                })
 
+            }, 2000);
+        }
+
+    }
 
     render() {
         const { query, showingBooks } = this.state
-        const { onChangeShelf } = this.props        
+        const { onChangeShelf } = this.props
 
         return (
             <div className="search-books">

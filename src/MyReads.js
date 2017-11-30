@@ -8,7 +8,7 @@ class MyReads extends Component {
             { title: 'Currently Reading', name: 'currentlyReading' },
             { title: 'Want to Read', name: 'wantToRead' },
             { title: 'Read', name: 'read' }
-        ].map((o, i) => ({ ...o, id: i }))
+        ]
         const { books, onChangeShelf } = this.props
 
         return (
@@ -19,14 +19,14 @@ class MyReads extends Component {
                 <div className="list-books-content">
                     <div>
                         {shelves.map(shelf => (
-                            <div key={shelf.id} className="bookshelf">
+                            <div key={shelf.name} className="bookshelf">
                                 <h2 className="bookshelf-title">{shelf.title}</h2>
                                 <div className="bookshelf-books">
                                     <ol className="books-grid">
-                                        {books.filter(o => (o.shelf === shelf.name)).map(c => (
-                                            <li key={c.id}>
+                                        {books.filter(book => (book.shelf === shelf.name)).map(bookOnThisShelf => (
+                                            <li key={bookOnThisShelf.id}>
                                                 <Book
-                                                    book={c}
+                                                    book={bookOnThisShelf}
                                                     onChangeShelf={onChangeShelf} />
                                             </li>
                                         ))}

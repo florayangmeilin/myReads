@@ -11,8 +11,8 @@ class BooksApp extends Component {
     books: []
   }
   componentDidMount() {
-    BooksAPI.getAll().then((books) => {
-      this.setState({ books })
+    BooksAPI.getAll().then((booksOnShelf) => {
+      this.setState({ books: booksOnShelf })
     })
   }
   updateShelf = ((book, shelf) => {
