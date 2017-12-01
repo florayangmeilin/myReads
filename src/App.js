@@ -17,9 +17,9 @@ class BooksApp extends Component {
   }
   updateShelf = ((book, shelf) => {
     BooksAPI.update(book, shelf).then(() => {     
-      if (this.state.books.find((thisBook) => book.id === thisBook.id)) { 
+      if (this.state.books.find((thisBook) => book.id === thisBook.id)) {        
         this.setState({ books: this.state.books.map(myBook => myBook.id === book.id ? { ...myBook, shelf } : { ...myBook }) })
-      } else {     
+      } else {          
         this.setState({ books: this.state.books.concat([{ ...book, shelf }]) })
       }
     })
