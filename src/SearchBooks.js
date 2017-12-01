@@ -8,45 +8,34 @@ class SearchBooks extends Component {
         query: '',
         showingBooks: []
     }
-    searchCount = 0
     timeoutID = -1
     updateQuery = (query) => {
         query = query.trim()
         this.setState({ query })
         if (this.timeoutID !== -1) {
-            // Cancel search request if there is input within 2 seconds
+            // To reduce invalid search
             clearTimeout(this.timeoutID)
+            this.timeoutID = -1
         }
         if (query === '') {
-            // If query is empty, there will be an error from BooksAPI.search
             this.setState({ showingBooks: [] })
+            // There is an error when you delete all input
         } else {
-            // start to search after 2 seconds
             this.timeoutID = setTimeout(() => {
                 this.timeoutID = -1
-                this.searchCount++
-                console.log('add searchCount = ', this.searchCount)
                 BooksAPI.search(query, 20).then(queryResult => {
-                    if (this.searchCount > 0) this.searchCount--
-                    console.log('ok searchCount = ', this.searchCount)
-                    if (this.searchCount === 0) {
-                        let books = (queryResult && !queryResult.error && queryResult) || []
-                        const { myReads } = this.props
-                        books = books.map(o => {
-                            const f = myReads.find(o1 => o1.id === o.id)
-                            o.shelf = f ? f.shelf : 'none'
-                            return o
-                        })
-                        this.setState({ showingBooks: books })
-                    }
-                }).catch(() => {
-                    if (this.searchCount > 0) this.searchCount--
-                    console.log('failed searchCount = ', this.searchCount)
+                    let books = (queryResult && !queryResult.error && queryResult) || []
+                    const { myReads } = this.props
+                    books = books.map(foudBook => {
+                        const locateShelf = myReads.find(readBook => readBook.id === foudBook.id)
+                        foudBook.shelf = locateShelf ? locateShelf.shelf : 'none'
+                        return foudBook
+                    })
+                    this.setState({ showingBooks: books })
+                }, () => {
                 })
-
             }, 2000);
         }
-
     }
 
     render() {
